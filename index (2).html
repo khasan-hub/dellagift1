@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+<title>Mwah, i love you</title>
+<link href="https://fonts.googleapis.com/css2?family=Chewy&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;font-family:'Chewy',cursive!important}
+:root{--b1:#8FC9FF;--b2:#A2D2FF;--b3:#BDE0FE;--b4:#D1E8FC;--b5:#E5F0FA;--dark:#2C3E4F;--deep:#5a9fd4}
+body{background:var(--b5) url('https://raw.githubusercontent.com/cargift/image/main/2e363cbf605420f0ff3c758c080fa75d.jpg') center/cover fixed;min-height:100vh;overflow-x:hidden}
+.deco{position:fixed;pointer-events:none;z-index:0;animation:rise linear infinite;opacity:.22;font-size:1.2rem}
+@keyframes rise{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-15vh) rotate(360deg)}}
+.page{display:none;min-height:100vh;padding:20px 14px 60px;position:relative;z-index:1}
+.page.active{display:block}
+.card{background:rgba(255,255,255,.9);backdrop-filter:blur(14px);border-radius:36px;padding:26px 20px 24px;border:3px solid var(--b2);box-shadow:0 9px 0 var(--b3),0 16px 36px rgba(143,201,255,.2);max-width:430px;margin:0 auto 14px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--b3),var(--b1),var(--b2),var(--b3));background-size:200%;animation:shimmer 2.5s linear infinite}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:-200%}}
+h1{font-size:2.2rem;line-height:1.3;color:var(--dark);text-shadow:2px 2px 0 var(--b4)}
+h2{font-size:1.8rem;color:var(--dark);margin-bottom:8px}
+p{font-size:1.1rem;color:var(--dark);margin:7px 0}
+.name{color:var(--b1);text-shadow:1px 1px 0 white}
+.tag{display:inline-block;background:var(--b1);color:white;border-radius:20px;padding:4px 14px;font-size:.95rem;animation:pop-in .4s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes pop-in{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.tag-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:10px 0}
+.btn{font-family:'Chewy',cursive!important;font-size:1.5rem;background:linear-gradient(135deg,var(--b1),var(--deep));color:white;border:none;border-radius:50px;padding:13px 30px;box-shadow:0 6px 0 var(--deep),0 10px 20px rgba(90,159,212,.25);cursor:pointer;display:block;margin:16px auto 0;transition:transform .08s,box-shadow .08s;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.25),transparent);border-radius:50px}
+.btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--deep)}
+.btn:disabled{opacity:.38;pointer-events:none;transform:none}
+.btn.ghost{background:white;color:var(--b1);border:3px solid var(--b2);box-shadow:0 6px 0 var(--b3)}
+.btn.ghost:active{box-shadow:0 1px 0 var(--b3)}
+.btn.sm{font-size:1.2rem;padding:10px 22px}
+.btn.inline{display:inline-block;margin:8px 4px 0}
+.big-emoji{font-size:4.5rem;display:block;text-align:center;margin-bottom:10px;animation:bounce 1.3s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.07)}}
+.ttt-board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:280px;margin:0 auto 14px}
+.cell{background:white;border:4px solid var(--b2);border-radius:24px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;font-size:3.8rem;color:#e8435e;box-shadow:0 6px 0 var(--b3);cursor:pointer;transition:transform .1s}
+.cell:active:not(.filled){transform:scale(.92)}
+.cell.filled{pointer-events:none;background:var(--b4)}
+.win-badge{display:none;background:linear-gradient(135deg,var(--b1),var(--deep));color:white;border-radius:30px;padding:10px 24px;font-size:1.5rem;text-align:center;margin:10px auto;box-shadow:0 5px 0 var(--deep)}
+.wheel-wrap{position:relative;width:280px;height:280px;margin:14px auto}
+canvas{width:100%;height:100%;border-radius:50%;border:6px solid var(--b3);box-shadow:0 10px 0 var(--b2),0 16px 30px rgba(143,201,255,.3);display:block}
+.pointer{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:22px solid transparent;border-right:22px solid transparent;border-top:36px solid #e65a7c;filter:drop-shadow(0 4px 3px rgba(0,0,0,.2));z-index:10}
+.spin-result{display:inline-block;background:linear-gradient(135deg,var(--b1),var(--deep));color:white;border-radius:30px;padding:8px 24px;font-size:1.6rem;margin:12px 0 4px;box-shadow:0 5px 0 var(--deep)}
+.btn-row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.letter-box{background:white;border-radius:26px;padding:22px 18px;border:3px solid var(--b2);box-shadow:inset 0 0 0 5px var(--b4),0 6px 0 var(--b3);font-size:1.1rem;line-height:1.85;color:var(--dark);min-height:180px;max-height:340px;overflow-y:auto;margin-bottom:12px;white-space:pre-wrap}
+.cursor-blink{display:inline-block;width:2px;height:1.1em;background:var(--b1);vertical-align:text-bottom;animation:cblink .7s step-end infinite;margin-left:2px}
+@keyframes cblink{0%,100%{opacity:1}50%{opacity:0}}
+.photo-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.photo-item{background:white;border-radius:22px;border:4px solid var(--b2);overflow:hidden;aspect-ratio:1/1;box-shadow:0 6px 0 var(--b3);transition:transform .15s}
+.photo-item:hover{transform:scale(1.03)}
+.photo-item img{width:100%;height:100%;object-fit:cover;display:block}
+.mem-note{display:block;text-align:center;background:var(--b4);border-radius:20px;padding:10px 16px;font-size:1.1rem;color:var(--dark);margin-top:4px}
+.spotify-wrap{border-radius:28px;overflow:hidden;border:4px solid var(--b3);box-shadow:0 8px 0 var(--b2),0 14px 30px rgba(143,201,255,.2);margin:14px 0;background:white}
+.spotify-note{display:block;text-align:center;font-size:1.1rem;color:var(--b1);margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="deco" style="left:6%;animation-duration:13s">⭐</div>
+<div class="deco" style="left:24%;animation-duration:17s;animation-delay:4s">💙</div>
+<div class="deco" style="left:48%;animation-duration:11s;animation-delay:2s">✨</div>
+<div class="deco" style="left:70%;animation-duration:15s;animation-delay:6s">💫</div>
+<div class="deco" style="left:88%;animation-duration:12s;animation-delay:1s">🌀</div>
+
+<!-- PAGE 1 -->
+<div id="page1" class="page active">
+  <div class="card" style="text-align:center">
+    <span class="big-emoji">💌</span>
+    <h1>Hi, <span class="name" id="p1name">Jenze</span> ~</h1>
+    <p style="color:var(--b1);margin:6px 0 10px">got something special for you ✨</p>
+    <div class="tag-row">
+      <span class="tag" style="animation-delay:.1s">💙 just for u</span>
+      <span class="tag" style="animation-delay:.2s">🎀 open me!</span>
+      <span class="tag" style="animation-delay:.3s">✨ special</span>
+    </div>
+    <button class="btn" id="next1">let's go!! →</button>
+  </div>
+</div>
+
+<!-- PAGE 2 -->
+<div id="page2" class="page">
+  <div class="card">
+    <div style="text-align:center;margin-bottom:14px">
+      <span style="font-size:2.5rem;display:block;margin-bottom:6px">🎮</span>
+      <h2>finish the game first!</h2>
+      <p style="color:var(--b1);font-size:.95rem">fill the top row with ♡ to win~</p>
+    </div>
+    <div class="ttt-board" id="gameBoard"></div>
+    <div class="win-badge" id="winMsg">♡ YOU WIN ♡ 🎉</div>
+    <button class="btn" id="next2" disabled>claim ur prize →</button>
+  </div>
+</div>
+
+<!-- PAGE 3 -->
+<div id="page3" class="page">
+  <div class="card" style="text-align:center">
+    <h2>🎡 who's your #1 fan?</h2>
+    <p style="color:var(--b1);font-size:.95rem;margin-bottom:4px">spin to find out~</p>
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <canvas id="wheelCanvas" width="400" height="400"></canvas>
+    </div>
+    <div class="spin-result" id="spinResult">-</div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn inline" id="spinBtn">🌀 spin!</button>
+      <button class="btn ghost inline sm" id="next3" disabled>next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4 -->
+<div id="page4" class="page">
+  <div class="card">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <span style="font-size:2.5rem">💌</span>
+      <div><h2>a little note</h2><p style="font-size:.95rem;color:var(--b1);margin:0">written just for you~</p></div>
+    </div>
+    <div class="letter-box">
+      <span id="typeText">apaya ini gatau</span><span class="cursor-blink" id="typeCursor" style="display:none"></span>
+    </div>
+    <button class="btn" id="next4">see our memories 📸</button>
+  </div>
+</div>
+
+<!-- PAGE 5 -->
+<div id="page5" class="page">
+  <div class="card">
+    <div style="text-align:center;margin-bottom:4px">
+      <span style="font-size:2.5rem">📸</span>
+      <h2>our memories</h2>
+    </div>
+    <div class="photo-grid">
+      <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/IMG-20260321-WA0133.jpg" alt="memory 1"></div>
+      <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/IMG-20260321-WA0001.jpg" alt="memory 2"></div>
+      <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/IMG-20260325-WA0011.jpg" alt="memory 3"></div>
+       <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/PXL_20260325_205814742.PORTRAIT.jpg" alt="memory 4"></div>
+    </div>
+      <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/20260325233738404.jpg" alt="memory 4"></div>
+       <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/IMG-20260322-WA0000.jpg" alt="memory 4"></div>
+    <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/IMG-20260304-WA0001.jpg" alt="memory 4"></div>
+    </div>
+    <div class="photo-item"><img src="https://uploads.onecompiler.io/44hfc7byy/44hf9hygk/20260325_195929_367.jpg" alt="memory 4"></div>
+    </div>
+    </div>
+    </div>
+    <span class="mem-note">thanks for coming into my life 💙</span>
+    <button class="btn" id="next5" style="margin-top:14px">listen to our playlist 🎵</button>
+  </div>
+</div>
+
+<!-- PAGE 6 -->
+<div id="page6" class="page">
+  <div class="card">
+    <div style="text-align:center;margin-bottom:10px">
+      <span style="font-size:2.5rem">🎵</span>
+      <h2>a playlist for you</h2>
+    </div>
+    <span class="spotify-note">songs that remind me of you 💙</span>
+    <div class="spotify-wrap">
+      <iframe src="https://open.spotify.com/embed/track/0Aii1ZdrQwkas2lrRFz6ZY" width="100%" height="480" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+    </div>
+    <button class="btn ghost sm" id="restartBtn" style="margin-top:14px">← start over</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const FRIEND_NAME="della";
+  const FULL_LETTER=`apaya ini gatau`;
+  const WHEEL_PHOTO1="images/photo_7230920132_1773871995.jpg";
+
+  const allPages=document.querySelectorAll('.page');
+  let curIdx=0;
+
+  function goTo(idx){
+    allPages.forEach(p=>p.classList.remove('active'));
+    allPages[idx].classList.add('active');
+    curIdx=idx;
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(idx===3)startTyping();
+  }
+
+  document.getElementById('p1name').textContent=FRIEND_NAME;
+  document.getElementById('next1').addEventListener('click',()=>goTo(1));
+
+  // TIC TAC TOE
+  const boardEl=document.getElementById('gameBoard'),next2=document.getElementById('next2'),winMsg=document.getElementById('winMsg');
+  let board=['♡','♡','','X','','X','','X',''];
+  function renderBoard(){
+    boardEl.innerHTML='';
+    board.forEach((val,idx)=>{
+      const cell=document.createElement('div');cell.className='cell'+(val?' filled':'');cell.textContent=val;cell.dataset.i=idx;
+      if(!val)cell.addEventListener('click',onCell);boardEl.appendChild(cell);
+    });
+  }
+  function onCell(e){const i=parseInt(e.target.dataset.i);if(board[i])return;board[i]='♡';renderBoard();if(board[0]==='♡'&&board[1]==='♡'&&board[2]==='♡'){winMsg.style.display='block';next2.disabled=false}}
+  renderBoard();
+  next2.addEventListener('click',()=>goTo(2));
+
+  // WHEEL
+  const canvas=document.getElementById('wheelCanvas'),ctx=canvas.getContext('2d');
+  const spinBtn=document.getElementById('spinBtn'),next3=document.getElementById('next3'),spinResult=document.getElementById('spinResult');
+  const profileImages=[WHEEL_PHOTO1,'https://raw.githubusercontent.com/cargift/image/main/56a34ef7e1163963c03b39d659da9f27.jpg','https://raw.githubusercontent.com/cargift/image/main/56a34ef7e1163963c03b39d659da9f27.jpg','https://raw.githubusercontent.com/cargift/image/main/7cbea566fa25838b9cc050c644937bd0.jpg','https://raw.githubusercontent.com/cargift/image/main/bd462480fa8ce00564ec9e2ad3bc286e.jpg'];
+  const N=profileImages.length,ang=(Math.PI*2)/N,loadedImgs=[];let imgLoaded=0;
+  function preload(cb){profileImages.forEach((src,i)=>{const img=new Image();img.crossOrigin='anonymous';img.src=src;img.onload=()=>{loadedImgs[i]=img;if(++imgLoaded===N)cb()};img.onerror=()=>{const fb=document.createElement('canvas');fb.width=80;fb.height=80;const fc=fb.getContext('2d');fc.fillStyle='#A2D2FF';fc.fillRect(0,0,80,80);loadedImgs[i]=fb;if(++imgLoaded===N)cb()}})}
+  let rot=0;
+  function drawWheel(r){ctx.clearRect(0,0,400,400);for(let i=0;i<N;i++){const s=i*ang+r,e=s+ang;ctx.fillStyle=i%2===0?'#D1E8FC':'#A2D2FF';ctx.beginPath();ctx.moveTo(200,200);ctx.arc(200,200,190,s,e);ctx.closePath();ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=3;ctx.stroke();if(loadedImgs[i]){ctx.save();ctx.translate(200,200);ctx.rotate(s+ang/2);ctx.translate(110,0);ctx.rotate(Math.PI/2);ctx.beginPath();ctx.arc(0,0,38,0,Math.PI*2);ctx.clip();ctx.drawImage(loadedImgs[i],-38,-38,76,76);ctx.restore()}}ctx.beginPath();ctx.arc(200,200,48,0,Math.PI*2);ctx.fillStyle='#8FC9FF';ctx.fill();ctx.strokeStyle='white';ctx.lineWidth=6;ctx.stroke()}
+  function initWheel(){rot=-Math.PI/2-ang/2;drawWheel(rot)}
+  function spinWheel(){spinBtn.disabled=true;next3.disabled=true;spinResult.textContent='spinning... 🌀';const target=(Math.PI*2*5)-(Math.PI/2+ang/2);const dur=4000,start=performance.now(),init=rot%(Math.PI*2);function anim(now){const t=Math.min((now-start)/dur,1),ease=1-Math.pow(1-t,3);rot=init+(target-init)*ease;drawWheel(rot);if(t<1)requestAnimationFrame(anim);else{spinResult.textContent='ME!! 💙';next3.disabled=false;spinBtn.disabled=false}}requestAnimationFrame(anim)}
+  preload(()=>initWheel());
+  spinBtn.addEventListener('click',spinWheel);
+  next3.addEventListener('click',()=>goTo(3));
+
+  // TYPEWRITER
+  const typeText=document.getElementById('typeText'),typeCursor=document.getElementById('typeCursor'),next4=document.getElementById('next4');
+  let typeTimer=null;
+  function startTyping(){
+    if(typeTimer)clearInterval(typeTimer);
+    // If letter content already in HTML (replaced by builder), show it directly
+    const existingText=typeText.textContent.trim();
+    const letterToType=FULL_LETTER.includes('[')&&FULL_LETTER.includes(']') ? existingText : FULL_LETTER;
+    if(!letterToType){next4.disabled=false;return;}
+    typeText.textContent='';
+    typeCursor.style.display='inline-block';
+    next4.disabled=true;
+    let i=0;
+    typeTimer=setInterval(()=>{
+      if(i<letterToType.length){
+        typeText.textContent+=letterToType.charAt(i++);
+        const lb=typeText.closest('.letter-box');
+        if(lb)lb.scrollTop=lb.scrollHeight;
+      }else{
+        clearInterval(typeTimer);typeTimer=null;
+        typeCursor.style.display='none';
+        next4.disabled=false;
+      }
+    },45);
+  }
+  next4.addEventListener('click',()=>goTo(4));
+  document.getElementById('next5').addEventListener('click',()=>goTo(5));
+  document.getElementById('restartBtn').addEventListener('click',()=>{
+    if(typeTimer){clearInterval(typeTimer);typeTimer=null}
+    board=['♡','♡','','X','','X','','X',''];renderBoard();winMsg.style.display='none';next2.disabled=true;
+    initWheel();spinResult.textContent='-';goTo(0);
+  });
+})();
+</script>
+</body>
+</html>
